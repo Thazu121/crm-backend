@@ -4,7 +4,6 @@ const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization
 
-        console.log("AUTH HEADER:", authHeader)
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Unauthorized - No token" })
@@ -12,7 +11,6 @@ const authMiddleware = async (req, res, next) => {
 
         const token = authHeader.split(" ")[1]
 
-        console.log("TOKEN:", token)
 
         if (!token) {
             return res.status(401).json({ message: "Token missing" })
@@ -29,7 +27,6 @@ const authMiddleware = async (req, res, next) => {
         next()
 
     } catch (error) {
-        console.log("JWT ERROR:", error.message)
         return res.status(403).json({ message: "Forbidden" })
     }
 }
