@@ -10,7 +10,8 @@ const app=express()
 app.use(express.json())
 app.use(cors({
   origin: [
-    "https://crm-frontend-one-eta.vercel.app"
+    "http://localhost:5173",
+    "https://crm-frontend-iaym.vercel.app"
   ],
   credentials: true
 }));
