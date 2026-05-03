@@ -49,13 +49,38 @@ const getAllCustomer = async (req, res, next) => {
 }
 
 
-
-
-
 const updateCustomer = async (req, res, next) => {
     try {
         const { id } = req.params
         let { name, email, phone, company } = req.body
+
+        if (name) name = name.trim()
+        if (email) email = email.trim().toLowerCase()
+        if (phone) phone = phone.trim()
+
+        if (name && name.length < 3) {
+            return res.status(400).json({
+                message: "Name must be at least 3 characters"
+            })
+        }
+
+        if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({
+                    message: "Invalid email"
+                })
+            }
+        }
+
+        if (phone) {
+            const phoneRegex = /^[0-9]{10}$/
+            if (!phoneRegex.test(phone)) {
+                return res.status(400).json({
+                    message: "Phone must be 10 digits"
+                })
+            }
+        }
 
         const customer = await customerModel.findById(id)
 
@@ -66,7 +91,6 @@ const updateCustomer = async (req, res, next) => {
         if (customer.createdBy.toString() !== req.user.id) {
             return res.status(403).json({ message: "Not authorized" })
         }
-
 
         const existingCustomer = await customerModel.findOne({
             _id: { $ne: id },
@@ -123,6 +147,29 @@ const deleteCustomer = async (req, res, next) => {
         next(error)
     }
 }
+const searchCustomers = async (req, res) => {
+  try {
+    const { q } = req.query
+
+    if (!q) {
+      return res.status(400).json({ message: "Search query required" })
+    }
+
+    const customers = await customerModel.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } },
+        { phone: { $regex: q, $options: "i" } },
+        { company: { $regex: q, $options: "i" } }
+      ]
+    })
+
+    res.status(200).json({ customers })
+
+  } catch (err) {
+    next(err)
+  }
+}
 
 
 
@@ -130,6 +177,7 @@ export {
     addCustomer,
     updateCustomer,
     deleteCustomer,
-    getAllCustomer
+    getAllCustomer,
+    searchCustomers
 }
 

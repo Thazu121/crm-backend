@@ -3,7 +3,7 @@ import {
     addCustomer,
     deleteCustomer,
     getAllCustomer,
-    updateCustomer
+    updateCustomer,searchCustomers
 } from "../controllers/customerController.js"
 
 import authMiddleware from "../middlewares/authMiddleware.js"
@@ -18,5 +18,8 @@ customerRouter.get("/all", authMiddleware, getAllCustomer)
 customerRouter.put("/edit/:id", authMiddleware, updateCustomer)
 
 customerRouter.delete("/delete/:id", authMiddleware, deleteCustomer)
+
+customerRouter.get("/search",authMiddleware, searchCustomers)
+
 
 export default customerRouter

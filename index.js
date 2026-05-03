@@ -8,7 +8,9 @@ import errorHandler from "./middlewares/errorHandler.js"
 dotenv.config()
 const app=express()
 app.use(express.json())
-app.use("/",userRouter)
+app.use(cors({origin:"http://localhost:5174"}))
+
+app.use("/users",userRouter)
 app.use("/",customerRouter)
 app.use(errorHandler)
 const PORT = process.env.PORT 
