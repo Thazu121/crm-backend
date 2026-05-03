@@ -8,7 +8,13 @@ import errorHandler from "./middlewares/errorHandler.js"
 dotenv.config()
 const app=express()
 app.use(express.json())
-app.use(cors({origin:"http://localhost:5173"}))
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://crm-frontend-one-eta.vercel.app/"
+  ],
+  credentials: true
+}));
 
 app.use("/users",userRouter)
 app.use("/",customerRouter)
